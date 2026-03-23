@@ -5,6 +5,7 @@ export const parse = (
 ): ReturnType<typeof WebhookEvent.safeParse> => WebhookEvent.safeParse(value);
 
 export { dispatch } from './dispatch';
+export { handle } from './handle';
 export { verify } from './signature';
 
 export * from './types';

@@ -19,8 +19,34 @@ export type WebhookHandler<TEvent extends WebhookEvent = WebhookEvent> = (
 export interface VerifyWebhookOptions {
 	secret?: string;
 	payload: string;
-	headers: Headers | Record<string, string | undefined>;
+	headers: Headers | Record<string, string | string[] | undefined>;
 }
+
+export interface HandleWebhookOptions extends WebhookOptions {
+	payload: string;
+	headers: VerifyWebhookOptions['headers'];
+}
+
+export interface HandledWebhookSuccess {
+	success: true;
+	status: 200;
+	body: {
+		success: true;
+	};
+	event: WebhookEvent;
+}
+
+export interface HandledWebhookFailure {
+	success: false;
+	status: 400 | 401;
+	body: {
+		error: 'Invalid payload' | 'Invalid signature';
+	};
+}
+
+export type HandledWebhookResult =
+	| HandledWebhookFailure
+	| HandledWebhookSuccess;
 
 export interface WebhookDispatchOptions {
 	onPayload?(data: WebhookEvent): MaybePromise<unknown>;
