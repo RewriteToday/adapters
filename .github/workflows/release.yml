@@ -1,0 +1,84 @@
+name: Release
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+
+jobs:
+  publish-npm:
+    name: Publish To NPM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Resolve package from release tag
+        id: release
+        shell: bash
+        run: |
+          TAG='${{ github.event.release.tag_name }}'
+
+          case "$TAG" in
+            adapters@*)
+              echo "package_dir=packages/core" >> "$GITHUB_OUTPUT"
+              echo "package_name=@rewritetoday/adapters" >> "$GITHUB_OUTPUT"
+              echo "version=${TAG#adapters@}" >> "$GITHUB_OUTPUT"
+              ;;
+            elysia@*)
+              echo "package_dir=packages/elysia" >> "$GITHUB_OUTPUT"
+              echo "package_name=@rewritetoday/elysia" >> "$GITHUB_OUTPUT"
+              echo "version=${TAG#elysia@}" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unsupported release tag: $TAG" >&2
+              echo "Use adapters@<version> or elysia@<version>." >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Validate package version
+        shell: bash
+        run: |
+          ACTUAL="$(node -p "require('./${{ steps.release.outputs.package_dir }}/package.json').version")"
+          EXPECTED='${{ steps.release.outputs.version }}'
+
+          if [ "$ACTUAL" != "$EXPECTED" ]; then
+            echo "Release tag version ($EXPECTED) does not match package.json version ($ACTUAL)." >&2
+            exit 1
+          fi
+
+      - name: Prepare package manifest for publish
+        run: bun run scripts/prepare-publish.ts '${{ steps.release.outputs.package_dir }}'
+
+      - name: Build workspace
+        run: bun run build
+
+      - name: Verify NPM authentication
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish package
+        working-directory: ${{ steps.release.outputs.package_dir }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
