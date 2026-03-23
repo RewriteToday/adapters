@@ -1,57 +1,37 @@
-import {
-	dispatch,
-	parse,
-	verify,
-	type WebhookOptions,
-} from '@rewritetoday/adapters/webhooks';
-import type { Context } from 'elysia';
-import { RewriteElysiaError } from './errors';
+import { handle, type WebhookOptions } from '@rewritetoday/adapters/webhooks';
+import type { Context, RewriteElysiaErrorOptions } from './types';
 
-export { RewriteElysiaError } from './errors';
+export * from './types';
 export { version } from './version';
 
+export class RewriteElysiaError extends Error {
+	readonly code: string;
+
+	static readonly docs =
+		'https://docs.rewritetoday.com/en/webhooks/introduction';
+
+	constructor(message: string, options: RewriteElysiaErrorOptions) {
+		super(message);
+		this.code = options.code;
+		this.name = 'RewriteElysiaError';
+	}
+}
+
 export const Webhooks = (options: WebhookOptions) => {
-	if (!options.secret) {
+	if (!options.secret)
 		throw new RewriteElysiaError('Webhook secret is missing.', {
 			code: 'WEBHOOK_SECRET_MISSING',
 		});
-	}
 
 	return async (context: Context) => {
-		const raw = await context.request.text();
+		const result = await handle({
+			...options,
+			payload: await context.request.text(),
+			headers: context.request.headers,
+		});
 
-		if (
-			!verify({
-				payload: raw,
-				secret: options.secret,
-				headers: context.request.headers,
-			})
-		) {
-			context.set.status = 401;
+		context.set.status = result.status;
 
-			return { error: 'Invalid signature' };
-		}
-
-		let payload: unknown;
-
-		try {
-			payload = JSON.parse(raw);
-		} catch {
-			context.set.status = 400;
-
-			return { error: 'Invalid payload' };
-		}
-
-		const result = parse(payload);
-
-		if (!result.success) {
-			context.set.status = 400;
-
-			return { error: 'Invalid payload' };
-		}
-
-		await dispatch(result.data, options);
-
-		return { success: true };
+		return result.body;
 	};
 };
