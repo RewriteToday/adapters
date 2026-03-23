@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 type Manifest = {
@@ -19,7 +19,7 @@ if (!packageDir) {
 }
 
 const root = process.cwd();
-const workspaceDirs = ['packages/core', 'packages/elysia'];
+const packagesRoot = join(root, 'packages');
 const sections = [
 	'dependencies',
 	'devDependencies',
@@ -28,6 +28,9 @@ const sections = [
 ] as const;
 
 const manifests = new Map<string, Manifest>();
+const workspaceDirs = (await readdir(packagesRoot, { withFileTypes: true }))
+	.filter((entry) => entry.isDirectory())
+	.map((entry) => join('packages', entry.name));
 
 for (const dir of workspaceDirs) {
 	const manifest = JSON.parse(

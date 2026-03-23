@@ -40,14 +40,34 @@ jobs:
               echo "package_name=@rewritetoday/adapters" >> "$GITHUB_OUTPUT"
               echo "version=${TAG#adapters@}" >> "$GITHUB_OUTPUT"
               ;;
+            edge@*)
+              echo "package_dir=packages/edge" >> "$GITHUB_OUTPUT"
+              echo "package_name=@rewritetoday/edge" >> "$GITHUB_OUTPUT"
+              echo "version=${TAG#edge@}" >> "$GITHUB_OUTPUT"
+              ;;
             elysia@*)
               echo "package_dir=packages/elysia" >> "$GITHUB_OUTPUT"
               echo "package_name=@rewritetoday/elysia" >> "$GITHUB_OUTPUT"
               echo "version=${TAG#elysia@}" >> "$GITHUB_OUTPUT"
               ;;
+            express@*)
+              echo "package_dir=packages/express" >> "$GITHUB_OUTPUT"
+              echo "package_name=@rewritetoday/express" >> "$GITHUB_OUTPUT"
+              echo "version=${TAG#express@}" >> "$GITHUB_OUTPUT"
+              ;;
+            fastify@*)
+              echo "package_dir=packages/fastify" >> "$GITHUB_OUTPUT"
+              echo "package_name=@rewritetoday/fastify" >> "$GITHUB_OUTPUT"
+              echo "version=${TAG#fastify@}" >> "$GITHUB_OUTPUT"
+              ;;
+            hono@*)
+              echo "package_dir=packages/hono" >> "$GITHUB_OUTPUT"
+              echo "package_name=@rewritetoday/hono" >> "$GITHUB_OUTPUT"
+              echo "version=${TAG#hono@}" >> "$GITHUB_OUTPUT"
+              ;;
             *)
               echo "Unsupported release tag: $TAG" >&2
-              echo "Use adapters@<version> or elysia@<version>." >&2
+              echo "Use adapters@<version>, edge@<version>, elysia@<version>, express@<version>, fastify@<version>, or hono@<version>." >&2
               exit 1
               ;;
           esac

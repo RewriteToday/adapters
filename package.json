@@ -7,8 +7,8 @@
 	],
 	"scripts": {
 		"build": "bun run clean && bun run gen:version && tsc -b",
-		"clean": "rm -rf packages/core/dist packages/elysia/dist",
-		"gen:version": "bun run packages/core/scripts/version.ts && bun run packages/elysia/scripts/version.ts",
+		"clean": "rm -rf packages/*/dist",
+		"gen:version": "bun run packages/core/scripts/version.ts && bun run packages/edge/scripts/version.ts && bun run packages/elysia/scripts/version.ts && bun run packages/express/scripts/version.ts && bun run packages/fastify/scripts/version.ts && bun run packages/hono/scripts/version.ts",
 		"typecheck": "bun run gen:version && tsc -b --pretty false",
 		"biome:check": "bunx biome check .",
 		"biome:write": "bunx biome check . --write"
@@ -18,6 +18,10 @@
 		"@commitlint/cli": "^20.5.0",
 		"@commitlint/config-conventional": "^20.5.0",
 		"@types/bun": "latest",
+		"@types/express": "^5.0.6",
+		"express": "^5.2.1",
+		"fastify": "^5.8.2",
+		"hono": "^4.12.8",
 		"typescript": "^5.9.3"
 	}
 }

@@ -1,4 +1,11 @@
 {
 	"files": [],
-	"references": [{ "path": "./packages/core" }, { "path": "./packages/elysia" }]
+	"references": [
+		{ "path": "./packages/core" },
+		{ "path": "./packages/edge" },
+		{ "path": "./packages/elysia" },
+		{ "path": "./packages/express" },
+		{ "path": "./packages/fastify" },
+		{ "path": "./packages/hono" }
+	]
 }
