@@ -8,6 +8,8 @@ This monorepo contains the framework-first packages maintained by the Rewrite te
 
 You can find the full Webhooks documentation [here](https://docs.rewritetoday.com).
 
+<img src="https://cdn.rewritetoday.com/assets/banners/adapters.png" width="100%" alt="Rewrite Banner"/>
+
 ## Available adapters
 
 </div>

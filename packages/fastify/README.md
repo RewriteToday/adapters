@@ -8,6 +8,8 @@ Official integration of **Rewrite** with **Fastify** to receive **Webhooks** in 
 
 You can find the full Webhooks documentation [here](https://docs.rewritetoday.com).
 
+<img src="https://cdn.rewritetoday.com/assets/banners/fastify_banner.png" width="100%" alt="Rewrite Banner"/>
+
 ## Instalação
 
 Use with your favorite package manager:
