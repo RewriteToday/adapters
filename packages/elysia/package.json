@@ -1,0 +1,46 @@
+{
+	"name": "@rewritetoday/elysia",
+	"version": "0.1.0",
+	"description": "Rewrite webhooks made simple with Elysia.",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./src/index.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"bun": "./src/index.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"license": "Apache-2.0",
+	"publishConfig": {
+		"access": "public"
+	},
+	"sideEffects": false,
+	"engines": {
+		"node": ">=18",
+		"bun": ">=1.0.0"
+	},
+	"scripts": {
+		"build": "rm -rf dist && bun run gen:version && tsc -p tsconfig.json",
+		"types": "tsc -p tsconfig.json --emitDeclarationOnly",
+		"typecheck": "bun run gen:version && tsc -b --pretty false",
+		"gen:version": "bun run scripts/version.ts",
+		"prepublishOnly": "bun run build"
+	},
+	"dependencies": {
+		"@rewritetoday/adapters": "workspace:*"
+	},
+	"peerDependencies": {
+		"elysia": "^1.4.22",
+		"typescript": "^5"
+	},
+	"devDependencies": {
+		"elysia": "^1.4.22"
+	}
+}

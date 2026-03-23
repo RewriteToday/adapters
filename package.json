@@ -1,0 +1,23 @@
+{
+	"name": "adapters",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"packages/*"
+	],
+	"scripts": {
+		"build": "bun run clean && bun run gen:version && tsc -b",
+		"clean": "rm -rf packages/core/dist packages/elysia/dist",
+		"gen:version": "bun run packages/core/scripts/version.ts && bun run packages/elysia/scripts/version.ts",
+		"typecheck": "bun run gen:version && tsc -b --pretty false",
+		"biome:check": "bunx biome check .",
+		"biome:write": "bunx biome check . --write"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.8",
+		"@commitlint/cli": "^20.5.0",
+		"@commitlint/config-conventional": "^20.5.0",
+		"@types/bun": "latest",
+		"typescript": "^5.9.3"
+	}
+}
